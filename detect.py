@@ -24,16 +24,17 @@ def detect(img_path: str) -> Dict[str, int]:
     """
     wartKolor = [0,0,0,0]
 
-    kernelE = np.ones((6, 6), np.uint8)
-    kernelD = np.ones((5, 5), np.uint8)
-    arr_low_h = [31, 0, 153, 162]
-    arr_high_h = [56, 30, 172, 180]
+    arr_low_h = [31, 20, 162, 174]
+    arr_high_h = [56, 26, 176, 179]
 
-    arr_low_s = [85, 144, 82, 50]
-    arr_high_s = [255, 255, 255, 189]
+    arr_low_s = [85, 153, 82, 174]
+    arr_high_s = [255, 255, 235, 226]
 
-    arr_low_v = [17, 169, 0, 179]
-    arr_high_v = [175, 245, 255, 255]
+    arr_low_v = [17, 100, 0, 108]
+    arr_high_v = [175, 255, 121, 215]
+
+    arr_dilation = [4, 3, 12, 10]
+    arr_erosion = [5, 6, 4, 2]
 
     # Pobieranie zdjęcia
     img = cv.imread(img_path, cv.IMREAD_COLOR)
@@ -44,6 +45,8 @@ def detect(img_path: str) -> Dict[str, int]:
     frame_HSV = cv.cvtColor(imgB, cv.COLOR_BGR2HSV)
 
     for i in range(4):
+        kernelE = np.ones((arr_erosion[i], arr_erosion[i]), np.uint8)
+        kernelD = np.ones((arr_dilation[i], arr_dilation[i]), np.uint8)
 
         frame_threshold = cv.inRange(frame_HSV, (arr_low_h[i], arr_low_s[i], arr_low_v[i]),
                                      (arr_high_h[i], arr_high_s[i], arr_high_v[i]))
@@ -53,10 +56,10 @@ def detect(img_path: str) -> Dict[str, int]:
 
         contours, _ = cv.findContours(dilation, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
 
-        if i == 0: red = len(contours)
+        if i == 0: green = len(contours)
         if i == 1: yellow = len(contours)
-        if i == 2: green = len(contours)
-        if i == 3: purple = len(contours)
+        if i == 2: purple = len(contours)
+        if i == 3: red = len(contours)
 
 
 
